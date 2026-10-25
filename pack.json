@@ -1,0 +1,222 @@
+{
+ "format": "pack/1",
+ "engine": "comfyui",
+ "kind": "Text To Image",
+ "id": "chroma1-flash",
+ "label": "Chroma1-Flash",
+ "note": "12 steps, CFG 1, Euler, beta. No negative prompt (CFG 1 ignores it). Write long, detailed descriptions.",
+ "sizes": [
+  [
+   1024,
+   1024,
+   "Square"
+  ],
+  [
+   1536,
+   960,
+   "Landscape 16:10"
+  ],
+  [
+   960,
+   1536,
+   "Portrait 10:16"
+  ],
+  [
+   1152,
+   896,
+   "Landscape 4:3"
+  ],
+  [
+   896,
+   1152,
+   "Portrait 3:4"
+  ]
+ ],
+ "size_step": 16,
+ "workflow": {
+  "731": {
+   "class_type": "UNETLoader",
+   "inputs": {
+    "unet_name": "Chroma1-HD-Flash.safetensors",
+    "weight_dtype": "fp8_e4m3fn"
+   }
+  },
+  "733": {
+   "class_type": "CLIPLoader",
+   "inputs": {
+    "clip_name": "t5xxl_fp8_e4m3fn.safetensors",
+    "type": "chroma",
+    "device": "default"
+   }
+  },
+  "741": {
+   "class_type": "T5TokenizerOptions",
+   "inputs": {
+    "clip": [
+     "733",
+     0
+    ],
+    "min_padding": 0,
+    "min_length": 0
+   }
+  },
+  "748": {
+   "class_type": "CLIPTextEncode",
+   "inputs": {
+    "clip": [
+     "741",
+     0
+    ],
+    "text": ""
+   }
+  },
+  "749": {
+   "class_type": "CLIPTextEncode",
+   "inputs": {
+    "clip": [
+     "741",
+     0
+    ],
+    "text": "This low quality greyscale unfinished sketch is inaccurate and flawed. The image is very blurred and lacks detail with excessive chromatic aberrations and artifacts. The image is overly saturated with excessive bloom. It has a toony aesthetic with bold outlines and flat colors. It looks like an anime illustration, a cartoon, a drawing or a 3D render with plastic skin and malformed anatomy."
+   }
+  },
+  "701": {
+   "class_type": "ModelSamplingAuraFlow",
+   "inputs": {
+    "model": [
+     "731",
+     0
+    ],
+    "shift": 1
+   }
+  },
+  "694": {
+   "class_type": "CFGGuider",
+   "inputs": {
+    "model": [
+     "701",
+     0
+    ],
+    "positive": [
+     "748",
+     0
+    ],
+    "negative": [
+     "749",
+     0
+    ],
+    "cfg": 1
+   }
+  },
+  "700": {
+   "class_type": "KSamplerSelect",
+   "inputs": {
+    "sampler_name": "euler"
+   }
+  },
+  "718": {
+   "class_type": "RandomNoise",
+   "inputs": {
+    "noise_seed": 0
+   }
+  },
+  "734": {
+   "class_type": "BasicScheduler",
+   "inputs": {
+    "model": [
+     "701",
+     0
+    ],
+    "scheduler": "beta",
+    "steps": 12,
+    "denoise": 1
+   }
+  },
+  "737": {
+   "class_type": "EmptySD3LatentImage",
+   "inputs": {
+    "width": 1024,
+    "height": 1024,
+    "batch_size": 1
+   }
+  },
+  "747": {
+   "class_type": "SamplerCustomAdvanced",
+   "inputs": {
+    "noise": [
+     "718",
+     0
+    ],
+    "guider": [
+     "694",
+     0
+    ],
+    "sampler": [
+     "700",
+     0
+    ],
+    "sigmas": [
+     "734",
+     0
+    ],
+    "latent_image": [
+     "737",
+     0
+    ]
+   }
+  },
+  "710": {
+   "class_type": "VAELoader",
+   "inputs": {
+    "vae_name": "ae.safetensors"
+   }
+  },
+  "298": {
+   "class_type": "VAEDecode",
+   "inputs": {
+    "samples": [
+     "747",
+     0
+    ],
+    "vae": [
+     "710",
+     0
+    ]
+   }
+  },
+  "740": {
+   "class_type": "SaveImage",
+   "inputs": {
+    "images": [
+     "298",
+     0
+    ],
+    "filename_prefix": "chroma1-hd-flash"
+   }
+  }
+ },
+ "prompt": [
+  [
+   "748",
+   "text"
+  ]
+ ],
+ "seed": [
+  [
+   "718",
+   "noise_seed"
+  ]
+ ],
+ "width": [
+  [
+   "737",
+   "width"
+  ]
+ ],
+ "height": [
+  [
+   "737",
+   "height"
+  ]
+ ]
+}
