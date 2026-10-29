@@ -1,5 +1,7 @@
 # Chroma1-Flash — RunPod Serverless worker
 
+> 🔞 **Adult (18+) · NSFW** — part of afterdark-workers, workers for uncensored adult image and video models.
+
 A ready-to-build [RunPod Serverless](https://runpod.io?ref=qpguwapm) worker for **[Chroma1-HD-Flash](https://huggingface.co/lodestones/Chroma1-Flash)** by lodestones — the fast, CFG-baked Chroma1 (Apache 2.0). Based on the official [`runpod/worker-comfyui`](https://github.com/runpod-workers/worker-comfyui).
 
 Models are baked into the image, so a cold start does not re-download anything.
